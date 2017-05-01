@@ -14,18 +14,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
 
-    <title>Tests</title>
+    <title>reminders</title>
 
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
     <script src="../bower_components/web-component-tester/browser.js"></script>
+
+    <!-- Import the element to test -->
+    <link rel="import" href="../src/my-reminders.html">
   </head>
   <body>
+    <test-fixture id="basic">
+      <template>
+        <my-reminders></my-reminders>
+      </template>
+    </test-fixture>
+
     <script>
-      WCT.loadSuites([
-        'my-view1.html?dom=shady',
-        'my-view1.html?dom=shadow',
-        'my-reminders.html?dom=shady',
-        'my-reminders.html?dom=shadow',
-      ]);
+      suite('reminders tests', function() {
+        var home;
+
+        setup(function() {
+          home = fixture('basic');
+        });
+
+        test('Title should be Reminders', function() {
+          var h1 = Polymer.dom(home.root).querySelector('.reminders__title');
+          assert.equal(h1.textContent, 'Reminders');
+        });
+      });
     </script>
   </body>
 </html>
