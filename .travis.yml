@@ -11,8 +11,7 @@ addons:
 node_js:
   - '7'
   - '6'
-before_script:
+before_install:
   - npm install -g bower polymer-cli
-  - bower install
 script:
   - xvfb-run npm test
