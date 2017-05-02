@@ -12,19 +12,18 @@
   "scripts": {
     "lint": "eslint . --ext js,html --ignore-path .gitignore",
     "test": "npm run lint && polymer test",
-    "postinstall": "node_modules/bower/bin/bower install && node_modules/polymer-cli/bin/polymer build",
+    "preinstall": "npm install -g polymer-cli bower",
+    "postinstall": "bower install && polymer build",
     "start": "NODE_ENV=production node server.js"
   },
   "pre-commit": [
     "test"
   ],
   "dependencies": {
-    "bower": "^1.8.0",
     "compression": "^1.6.2",
     "express": "^4.15.2",
     "helmet": "^3.5.0",
     "path": "^0.12.7",
-    "polymer-cli": "^0.18.1",
     "version-healthcheck": "^0.1.2",
     "winston": "^2.3.1"
   }
