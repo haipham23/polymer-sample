@@ -12,5 +12,8 @@
   },
   "globals": {
     "Polymer": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 6
   }
 }
