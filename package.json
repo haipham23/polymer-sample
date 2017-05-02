@@ -10,6 +10,16 @@
   },
   "scripts": {
     "lint": "eslint . --ext js,html --ignore-path .gitignore",
-    "test": "npm run lint && polymer test"
+    "test": "npm run lint && polymer test",
+    "postinstall": "bower install && polymer build",
+    "start": "NODE_ENV=production node server.js"
+  },
+  "dependencies": {
+    "compression": "^1.6.2",
+    "express": "^4.15.2",
+    "helmet": "^3.5.0",
+    "path": "^0.12.7",
+    "version-healthcheck": "^0.1.2",
+    "winston": "^2.3.1"
   }
 }
