@@ -11,12 +11,13 @@
   },
   "scripts": {
     "lint": "eslint . --ext js,html --ignore-path .gitignore",
-    "test": "npm run lint && polymer test",
+    "test": "polymer test",
     "preinstall": "npm install -g polymer-cli bower",
     "postinstall": "bower install && polymer build",
     "start": "NODE_ENV=production node server.js"
   },
   "pre-commit": [
+    "lint",
     "test"
   ],
   "dependencies": {

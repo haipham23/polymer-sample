@@ -1,0 +1,97 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>reminders</title>
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+    <script src="../bower_components/iron-test-helpers/mock-interactions.js"></script>
+
+
+    <!-- Import the element to test -->
+    <link rel="import" href="../src/reminder-form.html">
+  </head>
+  <body>
+    <test-fixture id="basic">
+      <template>
+        <reminder-form></reminder-form>
+      </template>
+    </test-fixture>
+
+    <script>
+      suite('reminders form tests', function() {
+        var form;
+        var title;
+        var desc;
+        var dueDate;
+        var saveButton;
+
+        setup(function() {
+          form = fixture('basic');
+        });
+
+        test('error message doesnt show at first', function() {
+          title = Polymer.dom(form.root).querySelector('#title');
+          desc = Polymer.dom(form.root).querySelector('#desc');
+          dueDate = Polymer.dom(form.root).querySelector('#dueDate');
+          saveButton = Polymer.dom(form.root).querySelector('#saveButton');
+
+          expect(title.inputElement.invalid).to.be.false;
+          expect(dueDate.inputElement.invalid).to.be.false;
+        });
+
+        test('validate title field', function() {
+          MockInteractions.tap(saveButton);
+
+          expect(title.inputElement.invalid).to.be.true;
+          expect(dueDate.inputElement.invalid).to.be.false;
+
+          title.value = 'foobar';
+          expect(title.inputElement.invalid).to.be.false;
+        });
+
+        test('validate due date field', function() {
+          MockInteractions.tap(saveButton);
+
+          expect(title.inputElement.invalid).to.be.false;
+          expect(dueDate.inputElement.invalid).to.be.true;
+
+          dueDate.value = '1000-01-01';
+          expect(dueDate.inputElement.invalid).to.be.false;
+
+          MockInteractions.tap(saveButton);
+          expect(dueDate.inputElement.invalid).to.be.true;
+
+          dueDate.value = '2018-01-01';
+          MockInteractions.tap(saveButton);
+          expect(dueDate.inputElement.invalid).to.be.false;
+        });
+
+        test('should clear the form after save', function() {
+          title.value = 'foobar';
+          desc.value = 'foobarlong';
+          dueDate.value = '2018-01-01';
+
+          MockInteractions.tap(saveButton);
+
+          expect(title.value).to.be.equal(null);
+          expect(desc.value).to.be.equal(null);
+          expect(dueDate.value).to.be.equal(null);
+        });
+      });
+    </script>
+  </body>
+</html>

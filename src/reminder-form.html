@@ -1,0 +1,164 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-input/paper-textarea.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-styles/color.html">
+<link rel="import" href="shared-styles.html">
+
+<script src="../bower_components/moment/min/moment.min.js"></script>
+<script src="../bower_components/lodash/lodash.min.js"></script>
+<script src="../bower_components/js-shortid/dist/js-shortid.min.js"></script>
+
+<dom-module id="reminder-form">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        padding: 10px;
+      }
+
+      .due-date {
+        width: 50%;
+        display: inline-block;
+      }
+
+      .btn-save-wrapper {
+        text-align: center;
+        width: 35%;
+        display: inline-block;
+      }
+
+      paper-button.indigo {
+        background-color: var(--paper-indigo-500);
+        color: white;
+        --paper-button-raised-keyboard-focus: {
+          background-color: var(--paper-pink-a200) !important;
+          color: white !important;
+        };
+      }
+    </style>
+
+    <div class="reminders__form">
+      <paper-input
+        always-float-label
+        auto-validate
+        label="Title"
+        error-message="Value Required"
+        required="true"
+        maxlength="50"
+        id="title"
+      >
+      </paper-input>
+      <paper-textarea
+        always-float-label
+        auto-validate
+        label="Description"
+        error-message="Please input less than 500 chars"
+        required="false"
+        maxlength="500"
+        id="desc"
+      >
+      </paper-textarea>
+      <paper-input
+        always-float-label
+        auto-validate
+        label="Due Date"
+        error-message="Invalid Date"
+        required="true"
+        type="date"
+        class="due-date"
+        id="dueDate"
+      >
+      </paper-input>
+      <div class="btn-save-wrapper">
+        <paper-button on-tap="_add" id="saveButton" class="indigo">Save</paper-button>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'reminder-form',
+      _add: function() {
+        var self = this;
+        var reminderForm = self.$;
+
+        self._validate(reminderForm, function(reminder) {
+          self._saveToStorage(reminder);
+          self._reset();
+        });
+      },
+      _validate: function(form, cb) {
+        var reminder = {
+          title: form.title.value,
+          desc: form.desc.value,
+          dueDate: form.dueDate.value,
+        };
+
+        if (!reminder.title) {
+          return form.title.invalid = true;
+        }
+
+        if (!reminder.dueDate) {
+          return form.dueDate.invalid = true;
+        }
+
+        var _dueDate = moment(reminder.dueDate, 'YYYY-MM-DD', true);
+        var _dueDateIsBeforeToday =
+          !_dueDate.isValid() ||
+          _dueDate.diff(moment()) <= 0;
+
+        if (_dueDateIsBeforeToday) {
+          return form.dueDate.invalid = true;
+        }
+
+        cb(reminder);
+      },
+      _saveToStorage: function(reminder) {
+        var localStorage = localStorage || window.localStorage;
+
+        if (localStorage) {
+          var reminders = [];
+
+          try {
+            var savedReminders = JSON.parse(localStorage.getItem('p-reminders'));
+            if (Array.isArray(savedReminders)) {
+              reminders = savedReminders;
+            }
+          } catch(e) { /* eslint-disable-line */ }
+
+          reminders.push(this._format(reminder));
+          localStorage.setItem('p-reminders', JSON.stringify(reminders));
+        }
+      },
+      _format: function(reminder) {
+        var _dueDate = reminder.dueDate;
+
+        return _.assign({}, reminder, {
+          _id: shortid.gen(),
+          _fDueDate: moment(_dueDate, 'YYYY-MM-DD'),
+          dueDate: moment(_dueDate, 'YYYY-MM-DD').format('DD/MM/YYYY'),
+        });
+      },
+      _reset: function() {
+        // reset form
+        this.$.title.value = null;
+        this.$.title.invalid = false;
+        this.$.desc.value = null;
+        this.$.desc.invalid = false;
+        this.$.dueDate.value = null;
+        this.$.dueDate.invalid = false;
+      },
+    });
+  </script>
+</dom-module>

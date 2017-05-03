@@ -13,7 +13,10 @@
     "new-cap": ["error", { "capIsNewExceptions": ["Polymer"] }]
   },
   "globals": {
-    "Polymer": true
+    "Polymer": true,
+    "_": true,
+    "moment": true,
+    "shortid": true
   },
   "parserOptions": {
     "ecmaVersion": 6

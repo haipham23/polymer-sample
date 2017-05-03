@@ -10,13 +10,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="shared-styles.html">
+<link rel="import" href="reminder-form.html">
 
 <dom-module id="my-reminders">
   <template>
     <style include="shared-styles">
       :host {
         display: block;
-
         padding: 10px;
       }
 
@@ -28,7 +28,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <div class="reminders">
       <h1 class="reminders__title">Reminders</h1>
-      <p>This is the reminder list</p>
+      <reminder-form></reminder-form>
     </div>
   </template>
 
