@@ -46,9 +46,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           color: white !important;
         };
       }
+
+      .reminder__form {
+        padding: 20px;
+        background-color: #ddd;
+        border-radius: 4px;
+      }
     </style>
 
-    <div class="reminders__form">
+    <div class="reminder__form">
       <paper-input
         auto-validate
         label="Title"
@@ -99,6 +105,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         self._validate(reminderForm, function(reminder) {
           self._saveToStorage(reminder);
+          self.fire('reminders-updated');
           self._reset();
         });
       },
@@ -159,8 +166,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.$.title.invalid = false;
         this.$.desc.value = null;
         this.$.desc.invalid = false;
-        this.$.dueDate.value = null;
-        this.$.dueDate.invalid = false;
+        this.today = moment().format(this.dateFormat);
       },
     });
   </script>

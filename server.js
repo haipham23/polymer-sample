@@ -15,7 +15,11 @@ app.get('/version', require('version-healthcheck'));
 app.get('/service-worker.js', (req, res) => {
   res.sendFile(path.join(__dirname, '/service-worker.js'));
 });
+
 app.use(express.static(__dirname + '/build/default'));
+app.get('*', (req, res) => {
+  res.sendFile('index.html', {root: '.'});
+});
 
 app.listen(port, (err) => {
   if (err) {

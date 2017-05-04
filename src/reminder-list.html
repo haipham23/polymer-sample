@@ -1,0 +1,156 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-styles/color.html">
+<link rel="import" href="../bower_components/iron-icons/iron-icons.html">
+<link rel="import" href="shared-styles.html">
+
+<script src="../bower_components/moment/min/moment.min.js"></script>
+<script src="../bower_components/lodash/lodash.min.js"></script>
+<script src="../bower_components/js-shortid/dist/js-shortid.min.js"></script>
+
+<dom-module id="reminder-list">
+  <template>
+    <style include="shared-styles">
+      :host {
+        display: block;
+        padding: 10px;
+      }
+
+      .reminder__item {
+        width: 100%;
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #ddd;
+        display: flex;
+        align-items: center;
+      }
+
+      .reminder__item__wrapper {
+        width: calc(100% - 70px);
+        display: inline-block;
+      }
+
+      .reminder__item__title {
+        font-weight: 600;
+      }
+
+      .reminder__item__desc,
+      .reminder__item__date {
+        color: #5F5F5F;
+        font-size: 0.8em;
+      }
+
+      .reminder__item__date {
+        font-weight: 600;
+      }
+
+      .reminder__item__button {
+        width: 60px;
+        display: inline-block;
+      }
+
+      .btn-red {
+        color: #C91438;
+      }
+
+      paper-fab,
+      paper-fab:hover,
+      paper-fab:focus,
+      paper-fab:active {
+        background: transparent;
+      }
+    </style>
+    <template
+      is="dom-repeat"
+      items="{{reminders}}"
+      as="reminder"
+      sort="_sort"
+    >
+      <div class="reminder__item">
+        <div class="reminder__item__button">
+          <paper-fab mini icon="delete" on-tap="_remove" noink id="{{reminder._id}}" class="btn-red"></paper-fab>
+        </div>
+        <div class="reminder__item__wrapper">
+          <div class="reminder__item__title">{{reminder.title}}</div>
+          <div class="reminder__item__desc">{{reminder.desc}}</div>
+          <div class="reminder__item__date">{{reminder.dueDate}}</div>
+        </div>
+      </div>
+    </template>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'reminder-list',
+      dateFormat: 'DD/MM/YYYY',
+      properties: {
+        reminders: Array,
+      },
+      listeners: {
+        'reminders-updated': 'ready',
+      },
+      ready: function() {
+        this.reminders = this._getFromStorage();
+      },
+      _remove: function(e) {
+        this._removeFromStorage(e.target.id);
+      },
+      _getFromStorage: function(reminder) {
+        var localStorage = localStorage || window.localStorage;
+        var reminders = [];
+
+        if (localStorage) {
+          try {
+            var savedReminders = JSON.parse(localStorage.getItem('p-reminders'));
+            if (Array.isArray(savedReminders)) {
+              reminders = savedReminders;
+            }
+          } catch(e) { /* eslint-disable-line */ }
+        }
+
+        return reminders;
+      },
+      _removeFromStorage: function(id) {
+        var localStorage = localStorage || window.localStorage;
+
+        if (localStorage) {
+          try {
+            var savedReminders = JSON.parse(localStorage.getItem('p-reminders'));
+            var newReminders = _.filter(
+              savedReminders,
+              function(x) {
+                return x._id !== id;
+              }
+            );
+            localStorage.setItem('p-reminders', JSON.stringify(newReminders));
+            this.fire('reminders-updated');
+          } catch(e) { /* eslint-disable-line */ }
+        }
+      },
+      _sort: function(a, b) {
+        var diff = moment(a._fDueDate).diff(moment(b._fDueDate), 'days');
+
+        if(diff === 0) {
+          return 0;
+        }
+
+        if(diff < 0) {
+          return -1;
+        }
+
+        return 1;
+      },
+    });
+  </script>
+</dom-module>
