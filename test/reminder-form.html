@@ -64,11 +64,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
 
         test('validate due date field', function() {
-          MockInteractions.tap(saveButton);
-
-          expect(title.inputElement.invalid).to.be.false;
-          expect(dueDate.inputElement.invalid).to.be.true;
-
           dueDate.value = '1000-01-01';
           expect(dueDate.inputElement.invalid).to.be.false;
 

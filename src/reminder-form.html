@@ -72,12 +72,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <paper-input
         always-float-label
         auto-validate
-        label="Due Date"
+        label="Due date"
         error-message="Invalid Date"
         required="true"
-        type="date"
         class="due-date"
         id="dueDate"
+        value="[[today]]"
       >
       </paper-input>
       <div class="btn-save-wrapper">
@@ -89,6 +89,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script>
     Polymer({
       is: 'reminder-form',
+      properties: {
+        today: String,
+      },
+      ready: function() {
+        this.today = moment().format('YYYY-MM-DD');
+      },
       _add: function() {
         var self = this;
         var reminderForm = self.$;
