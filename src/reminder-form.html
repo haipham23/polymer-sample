@@ -50,7 +50,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <div class="reminders__form">
       <paper-input
-        always-float-label
         auto-validate
         label="Title"
         error-message="Value Required"
@@ -59,8 +58,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         id="title"
       >
       </paper-input>
-      <paper-textarea
-        always-float-label
+      <paper-input
         auto-validate
         label="Description"
         error-message="Please input less than 500 chars"
@@ -68,11 +66,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         maxlength="500"
         id="desc"
       >
-      </paper-textarea>
+      </paper-input>
       <paper-input
-        always-float-label
         auto-validate
-        label="Due date"
+        label="Due date - DD/MM/YYYY"
         error-message="Invalid Date"
         required="true"
         class="due-date"
@@ -89,11 +86,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <script>
     Polymer({
       is: 'reminder-form',
+      dateFormat: 'DD/MM/YYYY',
       properties: {
         today: String,
       },
       ready: function() {
-        this.today = moment().format('YYYY-MM-DD');
+        this.today = moment().format(this.dateFormat);
       },
       _add: function() {
         var self = this;
@@ -119,10 +117,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           return form.dueDate.invalid = true;
         }
 
-        var _dueDate = moment(reminder.dueDate, 'YYYY-MM-DD', true);
+        var _dueDate = moment(reminder.dueDate, this.dateFormat, true);
         var _dueDateIsBeforeToday =
           !_dueDate.isValid() ||
-          _dueDate.diff(moment()) <= 0;
+          _dueDate.diff(moment(), 'days') < 0;
 
         if (_dueDateIsBeforeToday) {
           return form.dueDate.invalid = true;
@@ -152,8 +150,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         return _.assign({}, reminder, {
           _id: shortid.gen(),
-          _fDueDate: moment(_dueDate, 'YYYY-MM-DD'),
-          dueDate: moment(_dueDate, 'YYYY-MM-DD').format('DD/MM/YYYY'),
+          _fDueDate: moment(_dueDate, this.dateFormat),
         });
       },
       _reset: function() {

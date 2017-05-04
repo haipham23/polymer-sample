@@ -64,13 +64,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
 
         test('validate due date field', function() {
-          dueDate.value = '1000-01-01';
+          dueDate.value = '01/01/2000';
           expect(dueDate.inputElement.invalid).to.be.false;
 
           MockInteractions.tap(saveButton);
           expect(dueDate.inputElement.invalid).to.be.true;
 
-          dueDate.value = '2018-01-01';
+          dueDate.value = '01/01/2018';
           MockInteractions.tap(saveButton);
           expect(dueDate.inputElement.invalid).to.be.false;
         });
@@ -78,7 +78,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         test('should clear the form after save', function() {
           title.value = 'foobar';
           desc.value = 'foobarlong';
-          dueDate.value = '2018-01-01';
+          dueDate.value = '01/01/2018';
 
           MockInteractions.tap(saveButton);
 
