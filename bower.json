@@ -19,7 +19,8 @@
     "iron-elements": "PolymerElements/iron-elements#^1.0.10",
     "paper-ui-elements": "PolymerElements/paper-ui-elements",
     "iron-test-helpers": "^1.4.1",
-    "js-shortid": "^0.1.1"
+    "js-shortid": "^0.1.1",
+    "moment": "^2.18.1"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"
