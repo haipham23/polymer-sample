@@ -38,7 +38,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     Polymer({
       is: 'my-reminders',
       listeners: {
-        'reminders-updated': '_updateList',
+        'reminders-add': '_updateList',
       },
       _updateList: function(e) {
         // the parent makes the child fire an event

@@ -10,7 +10,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../bower_components/paper-input/paper-input.html">
-<link rel="import" href="../bower_components/paper-fab/paper-fab.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-styles/color.html">
 <link rel="import" href="../bower_components/iron-icons/iron-icons.html">
 <link rel="import" href="shared-styles.html">
@@ -37,7 +37,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       .reminder__item__wrapper {
-        width: calc(100% - 70px);
+        width: calc(100% - 110px);
         display: inline-block;
       }
 
@@ -56,8 +56,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       .reminder__item__button {
-        width: 60px;
+        width: 100px;
         display: inline-block;
+      }
+
+      .reminder__item__button__text {
+        display: none;
       }
 
       .btn-red {
@@ -79,12 +83,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     >
       <div class="reminder__item">
         <div class="reminder__item__button">
-          <paper-fab mini icon="delete" on-tap="_remove" noink id="{{reminder._id}}" class="btn-red"></paper-fab>
+          <paper-button on-tap="_remove" class="btn-red">
+            <iron-icon icon="delete"></iron-icon>
+          </paper-button>
         </div>
         <div class="reminder__item__wrapper">
-          <div class="reminder__item__title">{{reminder.title}}</div>
-          <div class="reminder__item__desc">{{reminder.desc}}</div>
-          <div class="reminder__item__date">{{reminder.dueDate}}</div>
+          <div class="reminder__item__title">[[reminder.title]]</div>
+          <div class="reminder__item__desc">[[reminder.desc]]</div>
+          <div class="reminder__item__date">[[reminder.dueDate]]</div>
         </div>
       </div>
     </template>
@@ -98,13 +104,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         reminders: Array,
       },
       listeners: {
-        'reminders-updated': 'ready',
+        'reminders-updated': '_updateList',
       },
       ready: function() {
+        this._updateList();
+      },
+      _updateList: function(e) {
         this.reminders = this._getFromStorage();
       },
       _remove: function(e) {
-        this._removeFromStorage(e.target.id);
+        var reminderId = e.model.reminder._id;
+        this._removeFromStorage(reminderId);
       },
       _getFromStorage: function(reminder) {
         var localStorage = localStorage || window.localStorage;
@@ -129,10 +139,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             var savedReminders = JSON.parse(localStorage.getItem('p-reminders'));
             var newReminders = _.filter(
               savedReminders,
-              function(x) {
-                return x._id !== id;
+              function(r) {
+                return r._id !== id;
               }
             );
+
             localStorage.setItem('p-reminders', JSON.stringify(newReminders));
             this.fire('reminders-updated');
           } catch(e) { /* eslint-disable-line */ }
