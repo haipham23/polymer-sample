@@ -31,6 +31,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       </template>
     </test-fixture>
 
+    <test-fixture id="validation">
+      <template>
+        <reminder-form></reminder-form>
+      </template>
+    </test-fixture>
+
     <script>
       suite('reminders form tests', function() {
         var form;
@@ -43,12 +49,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           form = fixture('basic');
         });
 
-        test('error message doesnt show at first', function() {
+        test('init test fields', function() {
           title = Polymer.dom(form.root).querySelector('#title');
           desc = Polymer.dom(form.root).querySelector('#desc');
           dueDate = Polymer.dom(form.root).querySelector('#dueDate');
           saveButton = Polymer.dom(form.root).querySelector('#saveButton');
+        });
 
+        test('error message doesnt show at first', function() {
           expect(title.inputElement.invalid).to.be.false;
           expect(dueDate.inputElement.invalid).to.be.false;
         });
@@ -85,6 +93,110 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           expect(title.value).to.be.equal(null);
           expect(desc.value).to.be.equal(null);
           expect(dueDate.value).to.be.string;
+        });
+      });
+
+      suite('validation tests', function() {
+        var form;
+        var title;
+        var desc;
+        var dueDate;
+        var saveButton;
+
+        /**
+         * auto generate string with supplied length
+         *
+         * @param {number} length - length of the string
+         * @return {string} - generated string
+         */
+        function generateString(length) {
+          var str = '';
+          var i;
+
+          for(i = 0; i < length; i++) {
+            str += 'a';
+          }
+
+          return str;
+        }
+
+        setup(function() {
+          form = fixture('validation');
+        });
+
+        test('init test fields', function() {
+          title = Polymer.dom(form.root).querySelector('#title');
+          desc = Polymer.dom(form.root).querySelector('#desc');
+          dueDate = Polymer.dom(form.root).querySelector('#dueDate');
+          saveButton = Polymer.dom(form.root).querySelector('#saveButton');
+        });
+
+        test('title input', function() {
+          // empty
+          title.value = '';
+          MockInteractions.tap(saveButton);
+          expect(title.inputElement.invalid).to.be.true;
+
+          // max length
+          title.value = generateString(51);
+          MockInteractions.tap(saveButton);
+          expect(title.inputElement.invalid).to.be.false;
+
+          // valid
+          title.value = generateString(50);
+          MockInteractions.tap(saveButton);
+          expect(title.inputElement.invalid).to.be.false;
+        });
+
+        test('description input', function() {
+          // setup
+          title.value = generateString(20);
+
+          // empty - valid
+          desc.value = '';
+          MockInteractions.tap(saveButton);
+          expect(desc.inputElement.invalid).to.be.false;
+
+          // max length
+          // desc.value = generateString(501);
+          // MockInteractions.tap(saveButton);
+          // expect(desc.inputElement.invalid).to.be.true;
+
+          // valid
+          desc.value = generateString(500);
+          MockInteractions.tap(saveButton);
+          expect(desc.inputElement.invalid).to.be.false;
+        });
+
+        test('date input', function() {
+          // setup
+          title.value = generateString(20);
+          desc.value = generateString(20);
+
+          // empty
+          dueDate.value = '';
+          MockInteractions.tap(saveButton);
+          expect(dueDate.inputElement.invalid).to.be.true;
+
+          // invalid date type
+          dueDate.value = generateString(10);
+          MockInteractions.tap(saveButton);
+          expect(dueDate.inputElement.invalid).to.be.true;
+
+          // invalid date format
+          dueDate.value = '05/20/2018';
+          MockInteractions.tap(saveButton);
+          expect(dueDate.inputElement.invalid).to.be.true;
+
+          // invalid date
+          dueDate.value = '31/02/2018';
+          MockInteractions.tap(saveButton);
+          expect(dueDate.inputElement.invalid).to.be.true;
+
+          // valid
+          dueDate.value = '10/02/2018';
+          MockInteractions.tap(saveButton);
+          expect(dueDate.inputElement.invalid).to.be.false;
         });
       });
     </script>
