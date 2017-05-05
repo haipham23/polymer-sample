@@ -51,6 +51,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         font-size: 0.8em;
       }
 
+      .reminder__item__title,
+      .reminder__item__desc {
+        word-break: break-word;
+        overflow: hidden;
+      }
+
       .reminder__item__date {
         font-weight: 600;
       }
@@ -65,7 +71,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
       .btn-red {
-        color: #C91438;
+        color: var(--paper-red-500);
+      }
+
+      .btn-green {
+        color: var(--paper-green-500);
+      }
+
+      .btn-orange {
+        color: var(--paper-orange-500);
       }
 
       paper-fab,
@@ -83,8 +97,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     >
       <div class="reminder__item">
         <div class="reminder__item__button">
-          <paper-button on-tap="_remove" class="btn-red">
-            <iron-icon icon="delete"></iron-icon>
+          <paper-button on-tap="_remove" class$="{{_getBtnClass(reminder._fDueDate)}}">
+            <iron-icon icon="delete-forever"></iron-icon>
           </paper-button>
         </div>
         <div class="reminder__item__wrapper">
@@ -161,6 +175,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
 
         return 1;
+      },
+      _getBtnClass: function(date) {
+        var diff = moment(date).diff(moment(), 'days');
+
+        if(diff > 0) {
+          return 'btn-green';
+        }
+
+        if(diff === 0) {
+          return 'btn-orange';
+        }
+
+        return 'btn-red';
       },
     });
   </script>
