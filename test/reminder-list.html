@@ -1,0 +1,111 @@
+<!--
+@license
+Copyright (c) 2016 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+    <title>reminder-list</title>
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+    <script src="../bower_components/iron-test-helpers/mock-interactions.js"></script>
+    <script src="../bower_components/moment/min/moment.min.js"></script>
+
+    <!-- Import the element to test -->
+    <link rel="import" href="../src/reminder-list.html">
+  </head>
+  <body>
+    <test-fixture id="basic">
+      <template>
+        <reminder-list></reminder-list>
+      </template>
+    </test-fixture>
+
+    <script>
+      suite('reminder list tests', function() {
+        var list;
+        var items;
+        var item;
+        var title;
+        var desc;
+        var dueDate;
+        var removeButton;
+        var reminders = [];
+
+        setup(function() {
+          list = fixture('basic');
+
+          for(var i = -2; i < 3; i++) {
+            var dueDate = moment().add(i, 'days');
+
+            reminders.push({
+              title: 'foo' + i,
+              desc: 'foobar' + i,
+              dueDate: dueDate.format('DD/MM/YYYY'),
+              _id: 'id' + i,
+              _fDueDate: dueDate,
+            });
+
+            if (i === 2) {
+              // save 5 reminders in local storage
+              window.localStorage.setItem('p-reminders', JSON.stringify(reminders));
+            }
+          }
+        });
+
+        test.skip('show the list of reminders', function() {
+          // var wrapper = Polymer.dom(list.root).querySelector('reminder-list');
+          // expect(wrapper.length).to.equal(1);
+
+          // should show 5 items
+          items = Polymer.dom(list.root).querySelectorAll('.reminder__item');
+          expect(items.length).to.equal(5);
+
+          // first items should display correct info
+          item = items[0];
+
+          title = item.querySelector('.reminder__item__title');
+          desc = item.querySelector('.reminder__item__desc');
+          dueDate = item.querySelector('.reminder__item__date');
+
+          expect(title.textContent).to.equal('foo-2');
+          expect(desc.textContent).to.equal('foobar-2');
+          expect(dueDate.textContent).to.equal(moment().add(-2, 'days'));
+        });
+
+        test.skip('remove a reminder', function() {
+          items = Polymer.dom(list.root).querySelectorAll('.reminder__item');
+          item = items[0];
+          removeButton = item.querySelector('.reminder__item__button');
+
+          MockInteractions.tap(removeButton);
+
+          // should show 4 items
+          items = Polymer.dom(list.root).querySelector('.reminder__item');
+          expect(items.length).to.equal(4);
+
+          // first items should display correct info
+          item = items[0];
+
+          title = item.querySelector('.reminder__item__title');
+          desc = item.querySelector('.reminder__item__desc');
+          dueDate = item.querySelector('.reminder__item__date');
+
+          expect(title.textContent).to.equal('foo-1');
+          expect(desc.textContent).to.equal('foobar-1');
+          expect(dueDate.textContent).to.equal(moment().add(-1, 'days'));
+        });
+      });
+    </script>
+  </body>
+</html>
