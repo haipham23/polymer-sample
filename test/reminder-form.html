@@ -20,7 +20,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <script src="../bower_components/web-component-tester/browser.js"></script>
     <script src="../bower_components/iron-test-helpers/mock-interactions.js"></script>
 
-
     <!-- Import the element to test -->
     <link rel="import" href="../src/reminder-form.html">
   </head>
@@ -32,6 +31,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </test-fixture>
 
     <test-fixture id="validation">
+      <template>
+        <reminder-form></reminder-form>
+      </template>
+    </test-fixture>
+
+    <test-fixture id="storage">
       <template>
         <reminder-form></reminder-form>
       </template>
@@ -197,6 +202,56 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           dueDate.value = '10/02/2018';
           MockInteractions.tap(saveButton);
           expect(dueDate.inputElement.invalid).to.be.false;
+        });
+      });
+
+      suite('local storage tests', function() {
+        var form;
+        var title;
+        var desc;
+        var dueDate;
+        var saveButton;
+
+        setup(function() {
+          form = fixture('storage');
+          window.localStorage.setItem('p-reminders', '');
+          // sinonjs.spy(form, 'fire');
+        });
+
+        test('init test fields', function() {
+          title = Polymer.dom(form.root).querySelector('#title');
+          desc = Polymer.dom(form.root).querySelector('#desc');
+          dueDate = Polymer.dom(form.root).querySelector('#dueDate');
+          saveButton = Polymer.dom(form.root).querySelector('#saveButton');
+        });
+
+        test('save to local storage', function() {
+          // local storage was empty
+          var before = window.localStorage.getItem('p-reminders');
+          expect(before).to.equal('');
+
+          title.value = 'foobar';
+          desc.value = 'foobarlong';
+          dueDate.value = '01/01/2018';
+
+          MockInteractions.tap(saveButton);
+
+          // one item added to local storage
+          var after = window.localStorage.getItem('p-reminders');
+          expect(after).to.be.string;
+
+          var lsArray = JSON.parse(after);
+          expect(lsArray.length).to.equal(1);
+
+          var lsObject = lsArray[0];
+          expect(lsObject.title).to.equal('foobar');
+          expect(lsObject.desc).to.equal('foobarlong');
+          expect(lsObject.dueDate).to.equal('01/01/2018');
+          expect(lsObject._id).to.be.string;
+          expect(lsObject._fDueDate).to.be.object;
+
+          // fire event called
+          // expect(form.fire).to.have.been.called;
         });
       });
     </script>

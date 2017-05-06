@@ -80,7 +80,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         required="true"
         class="due-date"
         id="dueDate"
-        value="[[today]]"
+        value="{{today}}"
       >
       </paper-input>
       <div class="btn-save-wrapper">
@@ -125,11 +125,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
 
         var _dueDate = moment(reminder.dueDate, this.dateFormat, true);
-        var _dueDateIsBeforeToday =
-          !_dueDate.isValid() ||
-          _dueDate.diff(moment(), 'days') < 0;
+        var _isInvalid = !_dueDate.isValid();
+        var _isBeforeToday = _dueDate.diff(moment(), 'days') < 0;
 
-        if (_dueDateIsBeforeToday) {
+        if (_isInvalid || _isBeforeToday) {
           return form.dueDate.invalid = true;
         }
 
