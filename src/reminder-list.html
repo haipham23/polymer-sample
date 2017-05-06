@@ -166,28 +166,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       _sort: function(a, b) {
         var diff = moment(a._fDueDate).diff(moment(b._fDueDate), 'days');
 
-        if(diff === 0) {
-          return 0;
-        }
-
-        if(diff < 0) {
-          return -1;
-        }
-
-        return 1;
+        return diff > 0 ? 1 :
+          diff < 0 ? -1 :
+          0;
       },
       _getBtnClass: function(date) {
         var diff = moment(date).diff(moment(), 'days');
 
-        if(diff > 0) {
-          return 'btn-green';
-        }
-
-        if(diff === 0) {
-          return 'btn-orange';
-        }
-
-        return 'btn-red';
+        return diff > 0 ? 'btn-green' :
+          diff < 0 ? 'btn-red' :
+          'btn-orange';
       },
     });
   </script>
