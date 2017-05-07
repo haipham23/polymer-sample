@@ -167,7 +167,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         return moment.utc(a._fDueDate).diff(moment.utc(b._fDueDate));
       },
       _getBtnClass: function(date) {
-        var diff = moment.utc(date).diff(moment.utc().startOf('day'), 'days', true);
+        var diff = moment(date, 'YYYY-MM-DD')
+          .diff(moment().format('YYYY-MM-DD'), 'days', true);
 
         return diff >= 1 ? 'btn-green' :
           diff < 0 ? 'btn-red' :

@@ -68,7 +68,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         auto-validate
         label="Description"
         error-message="Please input less than 500 chars"
-        required="false"
         maxlength="500"
         id="desc"
       >
@@ -156,7 +155,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         return _.assign({}, reminder, {
           _id: shortid.gen(),
-          _fDueDate: moment(_dueDate, this.dateFormat),
+          _fDueDate: moment(_dueDate, this.dateFormat).format('YYYY-MM-DD'),
         });
       },
       _reset: function() {
