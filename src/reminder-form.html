@@ -160,10 +160,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       },
       _reset: function() {
         // reset form
+        this.$.title.blur();
         this.$.title.value = null;
         this.$.title.invalid = false;
+
+        this.$.desc.blur();
         this.$.desc.value = null;
         this.$.desc.invalid = false;
+
         this.today = moment().format(this.dateFormat);
       },
     });
