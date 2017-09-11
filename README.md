@@ -1,4 +1,4 @@
-# Polymer Reminder
+# Polymer Reminder (v1)
 
 [![Build Status](https://travis-ci.org/haipham23/polymer-sample.svg?branch=master)](https://github.com/haipham23/polymer-sample)
 
